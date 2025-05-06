@@ -20,10 +20,11 @@ def home_view_render(request):
     
     
     data= requests.get(url, PARAMS).json()
-    print(data)
+    
     
     description = data['weather'][0]['description']
     icon = data['weather'][0]['icon']
     temperature = data['main']['temp']
+    print(temperature)
     date = datetime.date.today()
-    return render(request, 'index.html', {'description': description, 'icon': icon, 'temperature': temperature, 'day': date})
+    return render(request, 'home.html', {'description': description, 'icon': icon, 'temperature': temperature, 'day': date})

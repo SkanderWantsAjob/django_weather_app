@@ -1,0 +1,18 @@
+body {
+    background: linear-gradient(to right, #9eb8df, #84f9ff);
+    font-family: 'Segoe UI', sans-serif;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.weather-box {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    text-align: center;
+}
+.weather-icon {
+    width: 100px;
+}
