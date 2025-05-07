@@ -1,5 +1,5 @@
 import os
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.contrib import messages
 import requests
 import datetime
@@ -10,15 +10,16 @@ def home_view_render(request):
     OPENWEATHER_API_KEY = os.getenv('OPENWEATHER_API_KEY', '')
     GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY', '')
     SEARCH_ENGINE_ID = os.getenv('SEARCH_ENGINE_ID', '')
-   
-    if 'city' in request.POST:
-         city = request.POST['city']
-    else:
-         city = 'sousse'     
+    
+    
+    if request.method == "POST":
+        city = request.POST.get('city', 'sousse')
+        return redirect(f"/?city={city}")
+
+    city = request.GET.get('city', 'sousse')     
     
     url = f'https://api.openweathermap.org/data/2.5/weather?q={city}&appid={OPENWEATHER_API_KEY}'
     PARAMS = {'units':'metric'}
-     
     query = city + " 1920x1080"
     page = 1
     start = (page - 1) * 10 + 1
@@ -32,27 +33,26 @@ def home_view_render(request):
     
 
     try:
-          
-          data = requests.get(url,params=PARAMS).json()
-          description = data['weather'][0]['description']
-          icon = data['weather'][0]['icon']
-          temp = data['main']['temp']
-          day = datetime.date.today()
+        data = requests.get(url,params=PARAMS).json()
+        description = data['weather'][0]['description']
+        icon = data['weather'][0]['icon']
+        temp = data['main']['temp']
+        day = datetime.date.today()
 
-          return render(request,'home.html' , {'description':description , 'icon':icon ,'temp':temp , 'day':day , 'city':city , 'exception_occurred':False ,'image_url':image_url})
+        return render(request,'home.html' , {'description':description , 'icon':icon ,'temp':temp , 'day':day , 'city':city , 'exception_occurred':False ,'image_url':image_url})
     
     except KeyError:
-          exception_occurred = True
-          messages.error(request,'Entered data is not available to API')   
+        exception_occurred = True
+        messages.error(request,'Entered data is not available to API')   
           # city = 'indore'
           # data = requests.get(url,params=PARAMS).json()
           
           # description = data['weather'][0]['description']
           # icon = data['weather'][0]['icon']
           # temp = data['main']['temp']
-          day = datetime.date.today()
+        day = datetime.date.today()
 
-          return render(request,'home.html' ,{'description':'clear sky', 'icon':'01d'  ,'temp':25 , 'day':day , 'city':'indore' , 'exception_occurred':exception_occurred } )
-               
+        return render(request,'home.html' ,{'description':'clear sky', 'icon':'01d'  ,'temp':25 , 'day':day , 'city':'indore' , 'exception_occurred':exception_occurred } )
+
     
     
